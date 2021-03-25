@@ -8,10 +8,10 @@ const server = http.createServer(app);
 const io = socketIO(server);
 
 const onConnection = (socket) => {
-  console.log("🚀 ~ file: index.js ~ line 12 ~ onConnection ~ socket", socket);
-  socket.on("Chat Message", (message) => {
-    console.log("🚀 ~ file: index.js ~ line 15 ~ socket.on ~ message", message);
-    io.emit("chat message", message);
+  console.log("New user is connected", socket);
+  socket.on("CHAT_MESSAGE", (message) => {
+    console.log("Message received", message);
+    io.emit("BROADCAST_CHAT_MESSAGE", message);
   });
 };
 io.on("connection", onConnection);
