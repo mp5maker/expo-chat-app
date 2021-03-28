@@ -28,12 +28,11 @@ const HomeDetailsScreen = ({ navigation, route }: any): JSX.Element => {
   const otherUserID = get(route, "params.item.userID", "");
   const otherUsername = get(route, "params.item.username", "");
   const isKeyboardVisible = useKeyboard();
-  const hasIOS = isIOS();
 
   const [messages, setMessages] = React.useState<Array<any>>([]);
   const [message, setMessage] = React.useState<string>("");
 
-  const onSubmitEditing = React.useCallback(() => {
+  const onSubmitEditing = () => {
     if (message && message.trim()) {
       setMessages([
         ...messages,
@@ -48,32 +47,30 @@ const HomeDetailsScreen = ({ navigation, route }: any): JSX.Element => {
       });
       setMessage("");
     }
-  }, [message]);
+  };
 
-  const onChangeText = React.useCallback(
-    (_message) => setMessage(_message),
-    []
-  );
+  const onChangeText = (_message: string) => setMessage(_message);
 
   React.useEffect(() => {
     socket.auth = { username };
     socket.connect();
+  }, []);
 
+  React.useEffect(() => {
     socket.on(SOCKETS.PRIVATE_MESSAGES, ({ content, from }: any) => {
-      console.log("hello");
       if (otherUserID === from) {
-        setMessages([...messages, content]);
+        setMessages([...messages, { content, from }]);
       }
     });
-  }, [otherUserID]);
+  }, [otherUserID, messages]);
 
   const back = React.useCallback(() => {
     navigation.navigate(Routes.HOME_SCREEN.name);
   }, []);
 
-  const keyExtractor = React.useCallback((_item, index) => {
+  const keyExtractor = (_item: any, index: number) => {
     return generatedID + String(index);
-  }, []);
+  };
 
   const renderItem = ({ item }: any) => {
     const content = get(item, "content", "");
@@ -85,12 +82,13 @@ const HomeDetailsScreen = ({ navigation, route }: any): JSX.Element => {
           styles.message,
           {
             borderColor: isMe ? "green" : "blue",
-            marginRight: isMe ? 0 : 16,
-            marginLeft: isMe ? 16 : 0,
+            backgroundColor: isMe ? "#14a37f" : "#0276aa",
+            marginRight: isMe ? 4 : 16,
+            marginLeft: isMe ? 16 : 4,
           },
         ]}
       >
-        <Text>{content}</Text>
+        <Text style={[{ color: "white" }]}>{content}</Text>
       </View>
     );
   };
@@ -110,6 +108,7 @@ const HomeDetailsScreen = ({ navigation, route }: any): JSX.Element => {
           </Button>
         </Header>
         <FlatList
+          extraData={messages}
           style={[
             {
               flex: 1,
@@ -151,6 +150,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "lightgrey",
     marginVertical: 8,
+    borderRadius: 10,
   },
 });
 

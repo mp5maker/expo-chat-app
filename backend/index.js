@@ -40,10 +40,10 @@ const onConnection = (socket) => {
 
   socket.on("send_private_message", ({ content, to }) => {
     // Send Message to Specific person
-    console.log(content)
     socket.to(to).emit("private_messages", {
       content,
       from: socket.id,
+      // timestamp: Date.parse(new Date()),
     });
   });
 };
