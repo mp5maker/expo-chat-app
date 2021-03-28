@@ -1,6 +1,6 @@
 import * as React from "react";
-import initialState from '../reducers/auth/initial-state'
-import reducer from '../reducers/auth/reducer'
+import initialState from "../reducers/auth/initial-state";
+import reducer from "../reducers/auth/reducer";
 
 interface IAuthContextProps {
   state?: any;
@@ -13,7 +13,7 @@ interface IAuthContextProviderProps {}
 export const AuthContextProvider: React.FC<IAuthContextProviderProps> = ({
   children,
 }) => {
-  const [state, dispatch] = React.useReducer(initialState, reducer);
+  const [state, dispatch] = React.useReducer(reducer, initialState);
 
   return (
     <AuthContext.Provider

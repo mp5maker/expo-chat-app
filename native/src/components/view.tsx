@@ -3,10 +3,12 @@ import * as React from "react";
 
 interface IViewProps extends ViewProps {}
 
-export const View: React.FC<IViewProps> = ({ ...otherProps }): JSX.Element => {
+const View: React.FC<IViewProps> = ({ ...otherProps }): JSX.Element => {
   const props = {
     ...otherProps,
   };
 
   return <RNView {...props} />;
 };
+
+export default View;

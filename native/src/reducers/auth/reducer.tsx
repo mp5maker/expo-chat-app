@@ -1,5 +1,5 @@
 import * as Actions from "../../constants/actions";
-import initialState from "../../reducers/auth/initial-state";
+import initialState from "./initial-state";
 
 const reducer = (state = initialState, action: any) => {
   const { value } = action;

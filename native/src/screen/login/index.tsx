@@ -1,6 +1,6 @@
 import * as React from "react";
-import { View } from "../../components/view";
-import { Text } from "../../components/text";
+import View from "../../components/view";
+import Text from "../../components/text";
 import TextInput from "../../components/text-input";
 import Button from "../../components/button";
 import { StyleSheet } from "react-native";
@@ -8,10 +8,11 @@ import socket from "../../utilties/socket";
 import * as Routes from "../../constants/routes";
 import useAuth from "../../hooks/useAuth";
 import * as Actions from "../../constants/actions";
+import get from "lodash/get";
 
 const LoginScreen = ({ navigation }: any): JSX.Element => {
   const { state, dispatch }: any = useAuth();
-  const username = state?.username;
+  const username = get(state, "username", "");
 
   const onChangeText = React.useCallback((text) => {
     dispatch({
@@ -21,19 +22,15 @@ const LoginScreen = ({ navigation }: any): JSX.Element => {
   }, []);
 
   const onPress = React.useCallback(() => {
-    // @ts-ignore
     socket.auth = { username };
     socket.connect();
     socket.emit("CHAT_MESSAGE", "Bro I am awesome");
-    socket.onAny((event, ...args) => {
-      console.log(event, args);
-    });
-    socket.on("connect_error", (error) => {
+    socket.on("connect_error", (error: any) => {
       if (error.message === "INVALID_USERNAME") {
         return;
       }
     });
-    // navigation.navigate(Routes.HOME_SCREEN.name);
+    navigation.navigate(Routes.HOME_SCREEN.name);
   }, [username]);
 
   React.useEffect(() => {
