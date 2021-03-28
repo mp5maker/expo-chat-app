@@ -40,9 +40,10 @@ const HomeScreen = ({ navigation }: any): JSX.Element => {
       console.log(users);
     });
 
-    socket.onAny((event: any, ...args: any) => {
-      // console.log(event, args);
-    });
+    // Debug
+    // socket.onAny((event: any, ...args: any) => {
+    //   console.log(event, args);
+    // });
 
     return () => {
       socket.off(SOCKETS.CONNECT_ERROR);
