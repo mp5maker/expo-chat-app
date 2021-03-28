@@ -12,6 +12,8 @@ import Icon from "../../components/icon";
 import { useIsFocused } from "@react-navigation/native";
 import useCommon from "../../hooks/useCommon";
 import * as Actions from "../../constants/actions";
+import FlatList from "../../components/flat-list";
+import { StyleSheet } from "react-native";
 
 const HomeScreen = ({ navigation }: any): JSX.Element => {
   const { state: authState }: any = useAuth();
@@ -23,6 +25,10 @@ const HomeScreen = ({ navigation }: any): JSX.Element => {
 
   const back = React.useCallback(() => {
     navigation.navigate(Routes.LOGIN_SCREEN.name);
+  }, []);
+
+  const goToDetails = React.useCallback(({ item }) => {
+    console.log(item);
   }, []);
 
   React.useEffect(() => {
@@ -82,7 +88,18 @@ const HomeScreen = ({ navigation }: any): JSX.Element => {
     };
   }, []);
 
-  console.log(users);
+  const keyExtractor = React.useCallback((item) => {
+    return get(item, "userID", "");
+  }, []);
+
+  const renderItem = ({ item }: any) => {
+    const username = get(item, "username", "");
+    return (
+      <Button onPress={() => goToDetails({ item })} style={[styles.renderItem]}>
+        <Text>{username}</Text>
+      </Button>
+    );
+  };
 
   return (
     <View>
@@ -91,11 +108,28 @@ const HomeScreen = ({ navigation }: any): JSX.Element => {
           <Icon name={"chevron-left"} onPress={back} size={20} />
         </Button>
       </Header>
-      <View style={[{ padding: 16 }]}>
-        <Text>Hello</Text>
+      <View style={[styles.flatListContainer]}>
+        <FlatList
+          keyExtractor={keyExtractor}
+          renderItem={renderItem}
+          data={users}
+        />
       </View>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  flatListContainer: {
+    padding: 16,
+  },
+  renderItem: {
+    padding: 16,
+    minHeight: 40,
+    marginVertical: 8,
+    borderWidth: 1,
+    borderColor: "lightgrey",
+  },
+});
 
 export default HomeScreen;
