@@ -34,19 +34,21 @@ const HomeDetailsScreen = ({ navigation, route }: any): JSX.Element => {
   const [message, setMessage] = React.useState<string>("");
 
   const onSubmitEditing = React.useCallback(() => {
-    setMessages([
-      ...messages,
-      {
+    if (message && message.trim()) {
+      setMessages([
+        ...messages,
+        {
+          content: message,
+          from: username,
+        },
+      ]);
+      socket.emit(SOCKETS.SEND_PRIVATE_MESSAGE, {
         content: message,
-        from: username,
-      },
-    ]);
-    socket.emit(SOCKETS.SEND_PRIVATE_MESSAGE, {
-      message,
-      to: otherUserID,
-    });
-    setMessage("");
-  }, []);
+        to: otherUserID,
+      });
+      setMessage("");
+    }
+  }, [message]);
 
   const onChangeText = React.useCallback(
     (_message) => setMessage(_message),
@@ -58,7 +60,7 @@ const HomeDetailsScreen = ({ navigation, route }: any): JSX.Element => {
     socket.connect();
 
     socket.on(SOCKETS.PRIVATE_MESSAGES, ({ content, from }: any) => {
-      console.log(content)
+      console.log("hello");
       if (otherUserID === from) {
         setMessages([...messages, content]);
       }
@@ -74,13 +76,21 @@ const HomeDetailsScreen = ({ navigation, route }: any): JSX.Element => {
   }, []);
 
   const renderItem = ({ item }: any) => {
-    const username = get(item, "username", "");
-    const self = get(item, "self", false);
+    const content = get(item, "content", "");
+    const isMe = get(item, "from", "") !== otherUserID;
+
     return (
-      <View>
-        <Text>
-          {username} {self ? "(yourself)" : ""}
-        </Text>
+      <View
+        style={[
+          styles.message,
+          {
+            borderColor: isMe ? "green" : "blue",
+            marginRight: isMe ? 0 : 16,
+            marginLeft: isMe ? 16 : 0,
+          },
+        ]}
+      >
+        <Text>{content}</Text>
       </View>
     );
   };
@@ -135,6 +145,12 @@ const styles = StyleSheet.create({
   },
   textInput: {
     padding: 16,
+  },
+  message: {
+    padding: 16,
+    borderWidth: 1,
+    borderColor: "lightgrey",
+    marginVertical: 8,
   },
 });
 
