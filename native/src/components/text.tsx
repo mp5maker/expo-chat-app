@@ -1,4 +1,5 @@
 import { Text as RNText, TextProps } from "react-native";
+import * as React from "react";
 
 interface ITextProps extends TextProps {}
 

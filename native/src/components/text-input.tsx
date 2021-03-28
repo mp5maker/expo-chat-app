@@ -1,4 +1,5 @@
 import { TextInput as RNTextInput, TextInputProps } from "react-native";
+import * as React from 'react'
 
 interface ITextInputProps extends TextInputProps {}
 
