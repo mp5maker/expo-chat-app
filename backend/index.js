@@ -16,11 +16,12 @@ io.use((socket, next) => {
 });
 
 const onConnection = (socket) => {
-  socket.on("CHAT_MESSAGE", (message) => {
+  socket.on("send_chat_message", (message) => {
     console.log("Message received", message);
+    io.emit("chat_messages", message);
   });
 
-  socket.on("ALL_USERS", () => {
+  socket.on("give_all_users", () => {
     const users = [];
     for (let [id, socket] of io.of("/").sockets) {
       users.push({
@@ -28,7 +29,7 @@ const onConnection = (socket) => {
         username: socket.username,
       });
     }
-    socket.emit("USERS", users);
+    socket.emit("all_users", users);
   });
 };
 io.on("connection", onConnection);

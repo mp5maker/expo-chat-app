@@ -24,10 +24,12 @@ const LoginScreen = ({ navigation }: any): JSX.Element => {
   }, []);
 
   const onPress = React.useCallback(() => {
+    // Connection
     socket.auth = { username };
     socket.connect();
-    socket.emit(SOCKETS.CHAT_MESSAGE, "Bro I am awesome");
-    socket.on("connect_error", (error: any) => {
+
+    // Receive
+    socket.on(SOCKETS.CONNECT_ERROR, (error: any) => {
       if (error.message === "INVALID_USERNAME") {
         return;
       }
@@ -37,15 +39,18 @@ const LoginScreen = ({ navigation }: any): JSX.Element => {
 
   React.useEffect(() => {
     return () => {
-      socket.off("connect_error");
+      socket.off(SOCKETS.CONNECT_ERROR);
     };
-  });
+  }, []);
 
   return (
     <View>
       <Header />
       <View
-        style={[{ width: "100%", padding: 16, height: '95%' }, styles.container]}
+        style={[
+          { width: "100%", padding: 16, height: "95%" },
+          styles.container,
+        ]}
       >
         <View style={[{ marginVertical: 16, width: "100%" }]}>
           <TextInput
