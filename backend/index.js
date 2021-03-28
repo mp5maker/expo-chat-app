@@ -17,7 +17,7 @@ io.use((socket, next) => {
 
 const onConnection = (socket) => {
   socket.on("send_chat_message", (message) => {
-    console.log("Message received", message);
+    // console.log("Message received", message);
     io.emit("chat_messages", message);
   });
 
@@ -30,6 +30,12 @@ const onConnection = (socket) => {
       });
     }
     socket.emit("all_users", users);
+  });
+
+  // All but current socket
+  socket.broadcast.emit("new_user_connected", {
+    userID: socket.id,
+    username: socket.username,
   });
 };
 io.on("connection", onConnection);

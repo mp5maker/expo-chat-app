@@ -11,19 +11,26 @@ import * as Actions from "../../constants/actions";
 import get from "lodash/get";
 import SOCKETS from "../../constants/sockets";
 import Header from "../../components/header";
+import useCommon from "../../hooks/useCommon";
 
 const LoginScreen = ({ navigation }: any): JSX.Element => {
-  const { state, dispatch }: any = useAuth();
-  const username = get(state, "username", "");
+  const { state: authState, dispatch: authDispatch }: any = useAuth();
+  const { state: commonState, dispatch: commonDispatch }: any = useCommon();
+  const username = get(authState, "username", "");
+  const indicator = get(commonState, "indicator", false);
 
   const onChangeText = React.useCallback((text) => {
-    dispatch({
+    authDispatch({
       type: Actions.AUTH.CHANGE_USERNAME,
       value: text,
     });
   }, []);
 
   const onPress = React.useCallback(() => {
+    commonDispatch({
+      type: Actions.COMMON.CHANGE_INDICATOR,
+      value: true,
+    });
     // Connection
     socket.auth = { username };
     socket.connect();
@@ -35,6 +42,10 @@ const LoginScreen = ({ navigation }: any): JSX.Element => {
       }
     });
     navigation.navigate(Routes.HOME_SCREEN.name);
+    commonDispatch({
+      type: Actions.COMMON.CHANGE_INDICATOR,
+      value: false,
+    });
   }, [username]);
 
   React.useEffect(() => {
@@ -65,6 +76,7 @@ const LoginScreen = ({ navigation }: any): JSX.Element => {
           />
         </View>
         <Button
+          disabled={indicator}
           onPress={onPress}
           style={[
             {
