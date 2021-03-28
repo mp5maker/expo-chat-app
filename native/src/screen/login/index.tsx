@@ -9,6 +9,8 @@ import * as Routes from "../../constants/routes";
 import useAuth from "../../hooks/useAuth";
 import * as Actions from "../../constants/actions";
 import get from "lodash/get";
+import SOCKETS from "../../constants/sockets";
+import Header from "../../components/header";
 
 const LoginScreen = ({ navigation }: any): JSX.Element => {
   const { state, dispatch }: any = useAuth();
@@ -24,7 +26,7 @@ const LoginScreen = ({ navigation }: any): JSX.Element => {
   const onPress = React.useCallback(() => {
     socket.auth = { username };
     socket.connect();
-    socket.emit("CHAT_MESSAGE", "Bro I am awesome");
+    socket.emit(SOCKETS.CHAT_MESSAGE, "Bro I am awesome");
     socket.on("connect_error", (error: any) => {
       if (error.message === "INVALID_USERNAME") {
         return;
@@ -40,9 +42,12 @@ const LoginScreen = ({ navigation }: any): JSX.Element => {
   });
 
   return (
-    <View style={[styles.container]}>
-      <View style={[{ width: "100%", padding: 16, height: "100%" }]}>
-        <View style={[{ marginVertical: 16 }]}>
+    <View>
+      <Header />
+      <View
+        style={[{ width: "100%", padding: 16, height: '95%' }, styles.container]}
+      >
+        <View style={[{ marginVertical: 16, width: "100%" }]}>
           <TextInput
             style={[
               {
@@ -58,6 +63,7 @@ const LoginScreen = ({ navigation }: any): JSX.Element => {
           onPress={onPress}
           style={[
             {
+              width: "100%",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
