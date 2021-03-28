@@ -28,7 +28,9 @@ const HomeScreen = ({ navigation }: any): JSX.Element => {
   }, []);
 
   const goToDetails = React.useCallback(({ item }) => {
-    console.log(item);
+    navigation.navigate(Routes.HOME_DETAILS_SCREEN.name, {
+      item,
+    });
   }, []);
 
   React.useEffect(() => {
@@ -83,6 +85,9 @@ const HomeScreen = ({ navigation }: any): JSX.Element => {
   }, [isFocused]);
 
   React.useEffect(() => {
+    socket.on(SOCKETS.CONNECT, () => {});
+    socket.on(SOCKETS.DISCONNECT, () => {});
+
     return () => {
       socket.off(SOCKETS.CONNECT_ERROR);
     };
@@ -94,9 +99,12 @@ const HomeScreen = ({ navigation }: any): JSX.Element => {
 
   const renderItem = ({ item }: any) => {
     const username = get(item, "username", "");
+    const self = get(item, "self", false);
     return (
       <Button onPress={() => goToDetails({ item })} style={[styles.renderItem]}>
-        <Text>{username}</Text>
+        <Text>
+          {username} {self ? "(yourself)" : ""}
+        </Text>
       </Button>
     );
   };
@@ -104,7 +112,7 @@ const HomeScreen = ({ navigation }: any): JSX.Element => {
   return (
     <View>
       <Header>
-        <Button>
+        <Button disabled={indicator}>
           <Icon name={"chevron-left"} onPress={back} size={20} />
         </Button>
       </Header>

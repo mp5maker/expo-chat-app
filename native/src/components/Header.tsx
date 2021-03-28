@@ -3,15 +3,21 @@ import View from "./view";
 import Text from "./text";
 import { StyleSheet } from "react-native";
 
-interface IHeaderProps {}
+interface IHeaderProps {
+  left?: JSX.Element | JSX.Element[];
+}
 
-const Header: React.FC<IHeaderProps> = ({ children }): JSX.Element => {
+const Header: React.FC<IHeaderProps> = ({ left, children }): JSX.Element => {
   return (
     <>
       <View style={[styles.container]}>
-        <View>
-          <Text style={[styles.headerText]}>Chat</Text>
-        </View>
+        {left ? (
+          left
+        ) : (
+          <View>
+            <Text style={[styles.headerText]}>Chat</Text>
+          </View>
+        )}
         <View>{children}</View>
       </View>
     </>
@@ -24,8 +30,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     flexDirection: "row",
-    minHeight: 40,
+    height: 60,
     paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "lightgrey",
   },
   headerText: {
     fontWeight: "bold",

@@ -23,10 +23,10 @@ const onConnection = (socket) => {
 
   socket.on("give_all_users", () => {
     const users = [];
-    for (let [id, socket] of io.of("/").sockets) {
+    for (let [id, _socket] of io.of("/").sockets) {
       users.push({
         userID: id,
-        username: socket.username,
+        username: _socket.username,
       });
     }
     socket.emit("all_users", users);
@@ -36,6 +36,14 @@ const onConnection = (socket) => {
   socket.broadcast.emit("new_user_connected", {
     userID: socket.id,
     username: socket.username,
+  });
+
+  socket.on("send_private_message", ({ content, to }) => {
+    // Send Message to Specific person
+    socket.to(to).emit("private_messages", {
+      content,
+      from: socket.id,
+    });
   });
 };
 io.on("connection", onConnection);
